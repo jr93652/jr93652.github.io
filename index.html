@@ -130,7 +130,8 @@ var seed=[
  {id:1,name:"Yino outfit",zh:"厚棉T恤",price:28,cat:"Tops",sizes:["S","M","L","XL"],color:"#d8d2c4",photo:"https://i.ibb.co/nsKx2cX9/Image-5-D1-C6762-1217-4-BC2-B110-355-C43260979.jpg"},
  {id:2,name:"Justin outfit",zh:"直筒休闲裤",price:68,cat:"Bottoms",sizes:["S","M","L"],color:"#33415c",photo:"https://i.ibb.co/Q74F0RQM/Image-79-FC88-E1-CB34-4299-B0-B5-F86-CD567659-C.jpg"},
  {id:3,name:"Jeremy outfit",zh:"蜡面野外夹克",sale:20,price:149,cat:"Outerwear",sizes:["M","L","XL"],color:"#5a6b3f",photo:"https://i.ibb.co/9HwHqmSZ/Image-E5252126-F26-B-492-B-B37-E-5-BE4030-A4052.jpg"},
- {id:4,name:"Carter outfit",zh:"帆布低帮鞋",price:55,cat:"Shoes",sizes:["M","L"],color:"#e6e8ee",photo:"https://i.ibb.co/G42Bv2m3/Image-503406-FA-D2-CA-48-DD-BCF7-DDE35-EA93-C0-C.jpg"}];
+ {id:4,name:"Carter outfit",zh:"帆布低帮鞋",price:55,cat:"Shoes",sizes:["M","L"],color:"#e6e8ee",photo:"https://i.ibb.co/G42Bv2m3/Image-503406-FA-D2-CA-48-DD-BCF7-DDE35-EA93-C0-C.jpg"},
+ {id:5,name:"Yoyo joutfit",zh:"帆布低帮鞋",price:55,cat:"Shoes",sizes:["M","L"],color:"#e6e8ee",photo:"https://i.ibb.co/tw9dPwqW/Image-7-C5-E6-B47-E82-C-46-CA-81-A2-EC49-B939-E900.jpg"}];
 var items=load("loom-items",seed), bag=load("loom-bag",[]), filter="All", q="", nextId=Date.now(), photoData="";
 function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){toast("Couldn’t save – the photo may be too large.","无法保存，照片可能过大。")}}
