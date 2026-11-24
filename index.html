@@ -269,13 +269,13 @@ loggedin=0;
 render();
 })();
 </script>
-<script type="module">
+<!-- <script type="module"> >
 // import { initializeApp } from "firebase/app";
 
-import { initializeApp } from "https://gstatic.com/firebasejs/13.4.0/firebase-app.js";
+import { initializeApp, getApps } from "./js/firebase-app.js";
 
 //import { getDatabase, ref, child, get } from "firebase/database";
-import { getDatabase, ref, child, get } from "https://gstatic.com/firebasejs/13.4.0/firebase-database.js";
+import { getDatabase, ref, child, get } from "./js/firebase-database.js";
 
 
 const firebaseConfig = {
@@ -286,11 +286,11 @@ const firebaseConfig = {
   projectId: "shop-website-1335a",
   storageBucket: "shop-website-1335a.firebasestorage.app",
   messagingSenderId: "59502301388",
-  appId: "1:59502301388:web:fba3d391a7058c94f93269",
-  measurementId: "G-BQX8PQWPEV"
+  appId: "1:59502301388:web:efa8305cf9673739f93269",
+  measurementId: "G-Z245L3DWN5"
 };
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 
-const app = initializeApp(firebaseConfig);
 const dbRef = ref(getDatabase(app));
 
 async function fetchRealtimeData(userId) {
@@ -306,6 +306,37 @@ async function fetchRealtimeData(userId) {
   }
 }
 
+</script-->
+<script src="https://jsdelivr.net"></script>
+<script type="module">
+  // 1. Import Supabase from CDN
+//  import { createClient } from 'https://jsdelivr.net'
+
+  // 2. Initialize the client with your credentials
+  const supabaseUrl = 'https://zlgsxrexuorivbctpbfi.supabase.co'
+  const supabaseKey = 'sb_publishable_QzyCVtz2CYBjCh6vlWIbkg_FOI9gCt8'
+  const supabase = window.supabase.createClient(supabaseUrl, supabaseKey)
+
+  // 3. Example: Fetch rows from a table named "items"
+  async function loadData() {
+    const { data, error } = await supabase
+      .from('data')
+      .select('*')
+
+    if (error) {
+      console.error('Error fetching data:', error)
+      return
+    }
+
+    const list = document.getElementById('data-list')
+    data.forEach(item => {
+      const li = document.createElement('li')
+      li.textContent = JSON.stringify(item)
+      list.appendChild(li)
+    })
+  }
+
+  loadData()
 </script>
 </body>
 </html>
