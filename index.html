@@ -219,11 +219,11 @@ var hitems = [];
       // const [key, value] = pair.split("~");
       // return [key.trim(), value.trim()];
       // }))
-      console.log(li.id)
+
       newli = JSON.parse(li.id)
-      console.log(newli)
+  
       seed.push(newli)
-      console.log(seed)
+
       items = seed
       render()
     })
@@ -249,7 +249,7 @@ var hitems = [];
       // }))
 
       var newli = JSON.parse(li.id)
-      console.log(hitems)
+
       hitems.push(newli)
 
       hrender()
@@ -321,7 +321,7 @@ var hitems = [];
       const li = item
       newli = li.id
     })
-    console.log(newli)
+
     return newli
   }
 
@@ -355,14 +355,16 @@ function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;
 $("sizes").innerHTML=SIZES.map(function(s){return '<label><input type="checkbox" value="'+s+'"><span>'+s+(s==="One size"?'<span class="zh">均码</span>':'')+'</span></label>'}).join("");
 
 function renderFilters(){
-  $("filters").innerHTML=CATS.map(function(c){return '<button type="button" class="chip" data-c="'+c+'" aria-pressed="'+(c===filter)+'">'+c+'<span class="zh">'+ZC[c]+'</span></button>'}).join("");
+  $("filters").innerHTML=CATS.map(function(c){
+    return '<button type="button" class="chip" data-c="'+c+'" aria-pressed="'+(c===filter)+'">'+c+'<span class="zh">'+ZC[c]+'</span></button>'
+  }).join("");
 }
 function render(){
   renderFilters();
 
-  var qq=q.toLowerCase();var list=items
+  var qq=q.toLowerCase();var list=items.filter(function(i){return (filter==="All"||i.cat===filter)&&(!qq||[i.name,i.zh||"",i.cat,ZC[i.cat]].join(" ").toLowerCase().indexOf(qq)>-1)});
   const buddy = identified == 0 ? '<button class="del" type="button" style="display:none" id="deletionbutton" data-del="' : '<button class="del" type="button" style="display:inline" id="deletionbutton" data-del="'
-  console.log(identified)
+
   const buddy2 = '<button class="del" type="button" style="display:inline" id="deletionbutton" data-del="'
   $("grid").innerHTML=""
   $("grid").innerHTML=list.length?list.map(function(i){
@@ -438,18 +440,17 @@ $("grid").addEventListener("click",function(e){
 //    save("loom-items",items);render();
     toast(v?"Sale set: "+v+"% off":"Sale removed",v?"已设置促销："+v+"% 折扣":"已取消促销");return}
   if(a){
-    console.log(a)
+
     var it=items.find(function(i){return i.id==a});
 //    var it = readData(a)
-    console.log(it)
+
     bag.push({name:it.name,zh:it.zh,price:eff(it)});
     save("loom-bag",bag);
     render();toast("Added “"+it.name+"” to your bag","已将“"+(it.zh||it.name)+"”加入购物袋")}
   if(d){
 
   deleteData(d)
-  console.log(d)
-  console.log(readData(d))
+
   saveData(d)
 //  save("loom-items",items);
 
@@ -465,9 +466,9 @@ $("hgrid").addEventListener("click",function(e){
   if(a){
     // var it=items.find(function(i){return i.id==a});
     // bag.push({name:it.name,zh:it.zh,price:eff(it)});
-    console.log(a)
+
     readHistory(a)
-    console.log(readHistory(a))
+
     writeHistory(a)
   // save("loom-bag",bag);
   render();toast("Added item back to catalog")}
