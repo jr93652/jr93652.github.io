@@ -58,6 +58,8 @@ input[type=file]{font-size:.85rem;width:100%}
 .chip{padding:7px 14px;border:1px solid var(--line);background:var(--surface);border-radius:999px;cursor:pointer}
 .chip[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,0.5fr));gap:18px;overflow-x: hidden; overflow-y: auto;}
+.hgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,0.5fr));gap:18px;overflow-x: hidden; overflow-y: auto;}
+
 .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;display:flex;flex-direction:column}
 .thumb{aspect-ratio:4/5;display:flex;align-items:flex-end;padding:12px;background-size:cover;background-position:center;position:relative}
 .thumb b{font-family:"Bricolage Grotesque",sans-serif;font-size:1.6rem;color:#fff;mix-blend-mode:difference;letter-spacing:-.02em}
@@ -141,7 +143,7 @@ dialog::backdrop{background:rgba(0,0,0,.45)}
   <h2 style="font-size:1.5rem;margin-bottom:10px">Your bag<span class="zh">购物袋</span></h2>
   <div id="bagList"></div>
   <div class="total"><span>Total<span class="zh">总计</span></span><span id="bagTotal" style="text-align:right"></span></div>
-  <div class="row"><button id="clearBag" type="button">Empty bag<span class="zh">清空</span></button><button class="add" id="closeBag" type="button">Keep shopping<span class="zh">继续逛</span></button></div>
+  <div class="row"><button id="clearBag" type="button" class="add">Empty bag<span class="zh">清空</span></button><button class="add" id="closeBag" type="button">Keep shopping<span class="zh">继续逛</span></button></div>
 </dialog>
 
 <dialog id="adminlog">
@@ -247,10 +249,10 @@ var hitems = [];
       // }))
 
       var newli = JSON.parse(li.id)
-
+      console.log(hitems)
       hitems.push(newli)
 
-      render()
+      hrender()
     })
     return
   }
@@ -283,7 +285,7 @@ var hitems = [];
   async function saveData(a) {
     const { error } = await sb
       .from('history')
-      .insert({id: await readData(a)})
+      .insert({id: await readData(a), id2:a})
 
     if (error) {
       console.error('Error fetching data:', error)
@@ -304,6 +306,35 @@ var hitems = [];
       newli = JSON.parse(li.id)
     })
     return newli
+  }
+
+  async function readHistory(a) {
+    const { data, error } = await sb
+      .from('history')
+      .select('id')
+      .eq('id2',a)
+    if (error) {
+      console.error('Error fetching data:', error)
+      return
+    }
+    data.forEach(item => {
+      const li = item
+      newli = li.id
+    })
+    console.log(newli)
+    return newli
+  }
+
+  async function writeHistory(a) {
+    const { error } = await sb
+      .from('data2')
+      .insert({ id: await readHistory(a), id2:a })
+
+    if (error) {
+      console.error('Error fetching data:', error)
+      return
+    }
+    render()
   }
 
   loadData()
@@ -360,6 +391,7 @@ function render(){
   $("bagBtn").innerHTML="Bag ("+bag.length+')<span class="zh">购物袋（'+bag.length+"）</span>";
 }
 function hrender(){
+  renderFilters();
   var qq=q.toLowerCase();var list=hitems
   $("hgrid").innerHTML=""
   $("hgrid").innerHTML=list.length?list.map(function(i){
@@ -379,7 +411,11 @@ function hrender(){
 //      'identified === 0 ? ">Add to bag<span class="zh">加入购物袋</span></button><div class="saleRow" id = "salerow" style="display:none"><input type="number" min="0" max="90" placeholder="% off" aria-label="Discount percent 折扣百分比" data-s=" : ">Add to bag<span class="zh">加入购物袋</span></button><div class="saleRow" id = "salerow" style="display:inline"><input type="number" min="0" max="90" placeholder="% off" aria-label="Discount percent 折扣百分比" data-s="' +
       '">Bring Back</button><div class="saleRow" id = "salerow" style="display:none"><input type="number" min="0" max="90" placeholder="% off" aria-label="Discount percent 折扣百分比" data-s="'+
       i.id+
-      '">';
+      //'">';
+      '"><button type="button" class="add" data-setsale="'+
+      i.id+
+      '">Set sale<span class="zh">设置促销</span></button></div></div></article>';
+
       //<button type="button" class="add" data-setsale="'+
       //i.id+
       //'">Set sale<span class="zh">设置促销</span></button></div></div></article>';
@@ -411,7 +447,7 @@ $("grid").addEventListener("click",function(e){
     render();toast("Added “"+it.name+"” to your bag","已将“"+(it.zh||it.name)+"”加入购物袋")}
   if(d){
 
-//  deleteData(d)
+  deleteData(d)
   console.log(d)
   console.log(readData(d))
   saveData(d)
@@ -423,12 +459,18 @@ $("grid").addEventListener("click",function(e){
 
 });
 $("hgrid").addEventListener("click",function(e){
-  // var el=function(k){var x=e.target.closest("["+k+"]");return x?x.getAttribute(k):null};
-  // var a=el("data-add"),d=el("data-del"),ss=el("data-setsale");
+  var el=function(k){var x=e.target.closest("["+k+"]");return x?x.getAttribute(k):null};
+  var a=el("data-add"),d=el("data-del"),ss=el("data-setsale");
 
-  // if(a){var it=items.find(function(i){return i.id==a});bag.push({name:it.name,zh:it.zh,price:eff(it)});
+  if(a){
+    // var it=items.find(function(i){return i.id==a});
+    // bag.push({name:it.name,zh:it.zh,price:eff(it)});
+    console.log(a)
+    readHistory(a)
+    console.log(readHistory(a))
+    writeHistory(a)
   // save("loom-bag",bag);
-  // render();toast("Added “"+it.name+"” to your bag","已将“"+(it.zh||it.name)+"”加入购物袋")}
+  render();toast("Added item back to catalog")}
   hrender()
 
 });
@@ -437,6 +479,7 @@ $("bagBtn").onclick=function(){renderBag();$("bagDlg").showModal()};
 $("adminportal").onclick=function(){renderBag();$("adminlog").showModal()};
 $("openhistory").onclick=function(){
   renderBag();
+  hitems = [];
   hloadData();
   $("historylog").showModal();
   hrender();
@@ -475,6 +518,7 @@ $("addItem").onclick=function(){
   filter="All";q="";$("search").value="";render();toast("“"+name+"” added to the shop","“"+(items[0].zh||name)+"”已上架");
 };
 $("verify").onclick=function(){
+  $("adminlog").close()
   var key=$("key").value,val=$("val").value;
   if(key === "admin" && val === "6767"){
     identified=1
